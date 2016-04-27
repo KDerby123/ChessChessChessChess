@@ -15,3 +15,5 @@
  And, could we also make method names more clear? For example, the method name impededCheck() returns a boolean but its  ambiguous to what it actually returns. (it returns whether the piece's path to the location is impeded) And the method notSameColor() gives a negative boolean which is hard to understand (It checks if the piece is of the same color or not). That's why i change the names
  
  And Danny, could you do stuff?
+
+TEST
