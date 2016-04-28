@@ -14,8 +14,10 @@ public class Queen extends Piece {
 		int letter = coord.getLetter();
 		int numInc = Piece.genInc(selNum,num);
 		int letterInc = Piece.genInc(selLetter,letter);
+                selNum += numInc;
+    		selLetter += letterInc;
     		while ((selNum != num) || (selLetter != letter)) {
-    			if (!board.isEmpty(super.getCoord()))
+    			if (!board.isEmpty(new Coordinate(selNum, selLetter))) 
     				return true;
     			selNum += numInc;
     			selLetter += letterInc;
@@ -28,18 +30,21 @@ public class Queen extends Piece {
         	Piece p = loc.getPiece(); //
         	int num = coord.getNum();
         	int letter = coord.getLetter();
-        	double slope;
-        	if (super.isSameColor(p))
-        		return false;
-        	if (super.getLetter()-letter != 0)
-        		slope = (Math.abs(super.getNum()-num) * (1.0))/Math.abs(super.getLetter()-num);
-        	else
-        		slope = 0.0;
-       		if ((slope == 0.0) || (slope == 1.0))
-       			return isImpeded(board, coord);
+        	if (super.isSameColor(p)) {
+                    return false;
+                }
+        	if (testMoveHelper(coord.getNum(),coord.getLetter())) {
+                    return !isImpeded(board, coord);
+                }
        		return false;
 	}
 	
+        private boolean testMoveHelper(int coordNum, int coordLetter) {
+            if ((super.getNum() == coordNum) || (super.getLetter() == coordLetter))
+                return true;
+            return (Math.abs(super.getNum()-coordNum) == Math.abs(super.getLetter()-coordLetter));
+        }
+        
 	public ArrayList<Coordinate> getMoveSpan() {
     		ArrayList<Coordinate> coords = new ArrayList<Coordinate>();
     		spanDiagonalHelper(coords,1,1);
