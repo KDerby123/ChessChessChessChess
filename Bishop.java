@@ -15,7 +15,7 @@ public class Bishop extends Piece {
      		int numInc = Piece.genInc(selNum,num);
      		int letterInc = Piece.genInc(selLetter,letter);
      		while ((selNum != num) && (selLetter != letter)) {
-     			if (!board.isEmpty(super.getCoord()))
+     			if (!board.isEmpty(new Coordinate(selNum,selLetter)))
      				return true;
      		}
      		return false;
