@@ -65,7 +65,7 @@ public class Rook extends Piece {
 		return hasMoved;
 	}
 	
-	public void setHasMoved() {
-		hasMoved = false;
+	public void setHasMoved(boolean bool) {
+		hasMoved = bool;
 	}
 }
