@@ -27,7 +27,7 @@ public class Coordinate {
 	public static String notatedPos(Coordinate pos) {
 		char ch = 'a';
 		ch += pos.letter;
-		return "" + ch + (pos.num + 1);
+		return "" + ch + (8  -pos.num);
 		// chess board starts at 1
 	}
 
