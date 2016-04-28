@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class King extends Piece {
+	private boolean hasMoved;
 
 	public King(Color color, int num, int letter) {
 		super(color, num, letter);
@@ -9,8 +10,16 @@ public class King extends Piece {
 
 	public King(Color color, Coordinate coord) {
 		super(color, coord);
+		hasMoved = false;
 	}
-
+	
+	public boolean hasMoved() {
+		return hasMoved;
+	}
+	
+	public void setHasMoved(boolean bool) {
+		hasMoved = bool;
+	}
 	public boolean isImpeded(Board board, Coordinate coord) { // skeleton
 		return false; // Kings can't be impeded
 	}
@@ -30,10 +39,10 @@ public class King extends Piece {
         			i = 7;
         		if (coord.equals(new Coordinate(i,6))) {
         			p = board.getLocAt(new Coordinate(i,7)).getPiece();
-        			return ((p != null) && (p instanceof Rook) && (!p.hasMoved()));
+        			return ((p != null) && (p instanceof Rook) && (!((Rook) p).hasMoved()));
         		} else if (coord.equals(new Coordinate(i,3))) {
         			p = board.getLocAt(new Coordinate(i,1)).getPiece();
-        			return ((p != null) && (p instanceof Rook) && (!p.hasMoved()));
+        			return ((p != null) && (p instanceof Rook) && (!((Rook) p).hasMoved()));
         		}
         	}
         	return ((Math.abs(super.getNum()-num) <= 1) && (Math.abs(super.getLetter()-letter) <= 1));
