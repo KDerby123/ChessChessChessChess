@@ -14,6 +14,10 @@
  
  And, could we also make method names more clear? For example, the method name impededCheck() returns a boolean but its  ambiguous to what it actually returns. (it returns whether the piece's path to the location is impeded) And the method notSameColor() gives a negative boolean which is hard to understand (It checks if the piece is of the same color or not). That's why i change the names
  
+ # **UPDATE:** I saw the stupidest possible bugs in the movement scheme. ALL movement schemes are fixed. 
+ 
+ However, the check and castle methods for check are unable to be fixed until the GUI is fixed. I tested it and the coords do not line up. Until this is fixed, I will not be able to accurately fix my methods. The problem is that the inputted letter rank on the display needs to be reversed (i.e: a1 == h1, b1 == g1, c1 == f1, etc.). I have absolutely no idea how to modify your code to make this work, so you will have to do this. 
+ 
  And Danny, could you do stuff?
 
 TEST
