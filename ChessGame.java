@@ -39,7 +39,7 @@ public class ChessGame {
 			result = "White Turn";
 		else
 			result = "Black Turn";
-		gameInterface.displayResult(result);
+		gameInterface.displayResult0(result);
 		return true;
 	}
 
@@ -48,9 +48,11 @@ public class ChessGame {
 		Piece selectedPiece = board.getPieceAtCoord(selectedCoord);
 		System.out.println(selectedPiece);
 		if (selectedPiece == null || !currentPlayer.getColor().equals(selectedPiece.getColor())) {
-			gameInterface.displayResult("Not Valid");
+			gameInterface.displayResult1("Not Valid" );
 			return false;
-		}
+		} else
+			gameInterface.displayResult1("");
+		
 
 		Piece cappedPiece;
 		if (selectedCoord.equals(destinationCoord))
@@ -66,8 +68,8 @@ public class ChessGame {
 		if (selectedPiece instanceof King) {
 			kingTest(selectedPiece, destinationCoord);
 		}
-		if (selectedPiece instanceof Rook) {
-			selectedPiece.setHasMoved(true);
+		if ((selectedPiece instanceof Rook) && (((Rook) selectedPiece).hasMoved())) {
+			((Rook) selectedPiece).setHasMoved(true);
 		}
 		cappedPiece = board.replace(selectedPiece.getCoord(), destinationCoord);
 		if (cappedPiece != null) {
@@ -79,10 +81,14 @@ public class ChessGame {
 				capture = false;
 			}
 		}
+		if(selectedPiece instanceof Pawn && !((Pawn) selectedPiece).hasMoved()) {
+			((Pawn) selectedPiece).setHasMoved(true);
+		}
 		if ((selectedPiece instanceof Pawn) && ((Pawn) selectedPiece).promoteCheck()) {
 			String pieceName = getPieceName();
 			promotePawn(selectedPiece, pieceName);
 		}
+		
 		currentPlayer.addMove(selectedPiece + destinationCoord.getNotation());
 		if (currentPlayer.getColor() == Color.BLACK)
 			moves++;
@@ -94,6 +100,8 @@ public class ChessGame {
 		board.getLocAt(selectedCoord).setPiece(null);
 		board.getLocAt(destinationCoord).setPiece(selectedPiece);
 		selectedPiece.setCoord(destinationCoord);
+		
+		
 		return true;
 	}
 
@@ -105,7 +113,7 @@ public class ChessGame {
 			num = 0;
 		else
 			num = 7;
-		if (!selectedPiece.hasMoved()) {
+		if (!((King) selectedPiece).hasMoved()) {
 			if (destinationCoord.equals(new Coordinate(num, 6))) {
 				rook = (Rook) board.getPieceAtCoord(new Coordinate(num, 7));
 				nextDest = new Coordinate(num, 5);
@@ -116,7 +124,7 @@ public class ChessGame {
 				castleHelper(rook, nextDest);
 			}
 		}
-		selectedPiece.setHasMoved(true);
+		((King) selectedPiece).setHasMoved(true);
 	}
 
 	private void gameSetup(Player playerOne, Player playerTwo) {
@@ -148,7 +156,7 @@ public class ChessGame {
 
 	private void castleHelper(Rook rook, Coordinate nextDest) {
 		board.replace(rook.getCoord(), nextDest);
-		rook.setHasMoved();
+		rook.setHasMoved(true);
 	}
 
 	private String checkGameOver() {
