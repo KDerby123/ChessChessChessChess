@@ -5,15 +5,6 @@ public abstract class Piece {
 	private final Color color;
 	private Coordinate coord;
 	
-	private boolean hasMoved;
-
-	public boolean hasMoved() {
-		return hasMoved;
-	}
-
-	public void setHasMoved(boolean hasMoved) {
-		this.hasMoved = hasMoved;
-	}
 
 	public Piece(Color color, int num, int letter) { //This isn't used. Wanna delete it?
 		this.coord = new Coordinate(num, letter);
