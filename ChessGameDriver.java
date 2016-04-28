@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+
 import javax.swing.*;
 
 public class ChessGameDriver extends JFrame implements MouseMotionListener, MouseListener, ChessGameInterface {
@@ -11,7 +12,7 @@ public class ChessGameDriver extends JFrame implements MouseMotionListener, Mous
 	int yAdjustment;
 
 	Coordinate selectedCoord, destinationCoord;
-	JLabel output;
+	JLabel output0, output1;
 
 	final java.awt.Color brown = new java.awt.Color(136, 67, 8);
 
@@ -48,40 +49,43 @@ public class ChessGameDriver extends JFrame implements MouseMotionListener, Mous
 		}
 
 		// add output text
-		output = new JLabel("White turn", JLabel.LEFT);
-		chessBoard.add(output);
+		output0 = new JLabel("White turn", JLabel.LEFT);
+		chessBoard.add(output0);
+		output1 = new JLabel("", JLabel.RIGHT);
+		chessBoard.add(output1);
 
 		// Add black pieces to the board
 		int letter;
 		for (letter = 0; letter <= 7; letter += 7)
-			addPiece("BlackRook.png", 7, letter);
+			addPiece("BlackRook.png", 0, letter);
 		for (letter = 1; letter <= 6; letter += 5)
-			addPiece("BlackKnight.png", 7, letter);
+			addPiece("BlackKnight.png", 0, letter);
 		for (letter = 2; letter <= 5; letter += 3)
-			addPiece("BlackBishop.png", 7, letter);
+			addPiece("BlackBishop.png", 0, letter);
 		for (letter = 0; letter <= 7; ++letter)
-			addPiece("BlackPawn.png", 6, letter);
-		addPiece("BlackQueen.png", 7, 4);
-		addPiece("BlackKing.png", 7, 3);
+			addPiece("BlackPawn.png", 1, letter);
+		addPiece("BlackQueen.png", 0, 3);
+		addPiece("BlackKing.png", 0,4);
 
 		// white pieces to the board
 		for (letter = 0; letter <= 7; letter += 7)
-			addPiece("Rook.png", 0, letter);
+			addPiece("Rook.png", 7, letter);
 		for (letter = 1; letter <= 6; letter += 5)
-			addPiece("Knight.png", 0, letter);
+			addPiece("Knight.png", 7, letter);
 		for (letter = 2; letter <= 5; letter += 3)
-			addPiece("Bishop.png", 0, letter);
+			addPiece("Bishop.png", 7, letter);
 		for (letter = 0; letter <= 7; ++letter)
-			addPiece("Pawn.png", 1, letter);
-		addPiece("Queen.png", 0, 4);
-		addPiece("King.png", 0, 3);
+			addPiece("Pawn.png", 6, letter);
+		addPiece("Queen.png", 7, 3);
+		addPiece("King.png", 7, 4);
 
 		game = new ChessGame(new Player("Jack"), new Player("Jill"), this);
 
 	}
 
 	private void addPiece(ImageIcon ico, int num, int letter) {
-		addPiece(ico, new Coordinate(num, letter));
+		Coordinate coord = new Coordinate(num, letter);
+		addPiece(ico, coord);
 	}
 
 	private void addPiece(ImageIcon ico, Coordinate coord) {
@@ -98,7 +102,7 @@ public class ChessGameDriver extends JFrame implements MouseMotionListener, Mous
 		chessPiece = null;
 		Component c = chessBoard.findComponentAt(e.getX(), e.getY());
 
-		if (c instanceof JPanel || c == output)
+		if (c instanceof JPanel || c == output0 || c == output1)
 			return;
 
 		selectedCoord = componentIndexToCoord(chessBoard.getComponentZOrder(c.getParent()));
@@ -128,7 +132,7 @@ public class ChessGameDriver extends JFrame implements MouseMotionListener, Mous
 
 		
 		Component c = chessBoard.findComponentAt(e.getX(), e.getY());
-		if (c == output)
+		if (c == output0 || c == output1)
 			return;
 
 		chessPiece.setVisible(false);
@@ -204,8 +208,14 @@ public class ChessGameDriver extends JFrame implements MouseMotionListener, Mous
 	}
 
 	@Override
-	public void displayResult(String result) {
-		output.setText(result);
+	public void displayResult0(String result) {
+		output0.setText(result);
+	}
+
+
+	@Override
+	public void displayResult1(String result) {
+		output1.setText(result);
 	}
 
 }
