@@ -43,9 +43,9 @@ public class ChessGameDriver extends JFrame implements MouseMotionListener, Mous
 
 			int row = (i / 8) % 2;
 			if (row == 0)
-				square.setBackground(i % 2 == 0 ? brown : java.awt.Color.white);
-			else
 				square.setBackground(i % 2 == 0 ? java.awt.Color.white : brown);
+			else
+				square.setBackground(i % 2 == 0 ? brown : java.awt.Color.white);
 		}
 
 		// add output text
@@ -79,7 +79,7 @@ public class ChessGameDriver extends JFrame implements MouseMotionListener, Mous
 		addPiece("Queen.png", 7, 3);
 		addPiece("King.png", 7, 4);
 
-		game = new ChessGame(new Player("Jack"), new Player("Jill"), this);
+		game = new ChessGame(new Player("Black"), new Player("White"), this);
 
 	}
 
@@ -146,7 +146,11 @@ public class ChessGameDriver extends JFrame implements MouseMotionListener, Mous
 		destinationCoord = componentIndexToCoord(chessBoard.getComponentZOrder(parent));
 		System.out.println("Selected Coord: "  + selectedCoord);
 		System.out.println("Destination Coord: " + destinationCoord);
-		boolean result = game.process(selectedCoord, destinationCoord);
+                boolean result;
+                if (Board.isValid(destinationCoord))
+                    result = game.process(selectedCoord, destinationCoord);
+                else
+                    result = false;
 		if(!result) {
 			JPanel prev = (JPanel)chessBoard.getComponent(coordToComponentIndex(selectedCoord));
 			prev.add(chessPiece);
