@@ -100,11 +100,11 @@ public class Board {
 	}
 
 	public Piece replace(Coordinate to, Coordinate from) {
-		Location toLoc = getLocAt(to);
-		Location fromLoc = getLocAt(from);
-		Piece piece = toLoc.getPiece();
-		toLoc.setPiece(fromLoc.getPiece());
-		fromLoc.setPiece(null);
+		Piece piece = getPieceAtCoord(to);
+                Piece movedPiece = getPieceAtCoord(from);
+		this.getLocAt(to).setPiece(movedPiece);
+                this.getLocAt(from).setPiece(null);
+                movedPiece.setCoord(to);
 		return piece;
 	}
 
