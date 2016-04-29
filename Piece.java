@@ -38,12 +38,12 @@ public abstract class Piece {
 	}
 
 	/**
-	 * Checks if move is impeded by other peices
+	 * Checks if move is impeded by other pieces
 	 * 
-	 * @param Board
-	 *            b board of move
-	 * @param Coordinate
-	 *            the coordinate of the move
+	 * @param b
+	 *            Board board of move
+	 * @param move
+	 *            the Coordinate of the move
 	 * @return true if move is impeded, false otherwise
 	 */
 	protected abstract boolean isImpeded(Board b, Coordinate move);
@@ -51,10 +51,10 @@ public abstract class Piece {
 	/**
 	 * Checks if move is valid (exempt from check). SHOULD USE isImpeded(Board, Coordinate)
 	 * 
-	 * @param Board
-	 *            b board of move
-	 * @param Coordinate
-	 *            the coordinate of the move
+	 * @param b
+	 *            Board board of move
+	 * @param move
+	 *            Coordinate coordinate of the move
 	 * @return true if move is valid, false if not
 	 */
 	protected abstract boolean testMove(Board b, Coordinate move);
@@ -67,26 +67,14 @@ public abstract class Piece {
 	 */ 
 	protected abstract ArrayList<Coordinate> getMoveSpan();
 
-	public boolean hasMove(Board board, King king, Player oppPlayer) {
+	public boolean hasMove(Board board, King king, boolean turn) {
 		ArrayList<Coordinate> coords = getMoveSpan();
 		for (Coordinate coord : coords) {
-			if ((Board.isValid(coord) && testMove(board, coord)
-					&& ChessGame.testCheck(board, this.getCoord(), coord, oppPlayer)))
+			if (Board.isValid(coord) && testMove(board, coord)
+					&& !ChessGame.testCheck(board, coord, this.getCoord(), turn))
 				return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Checks if opponent piece is at location (is of other color)
-	 * 
-	 * @param loc
-	 *            the Location of the piece
-	 */
-	public boolean isSameColor(Location loc) {  //the other method is more useful and is actually implemented
-		if (loc.getPiece() == null)
-			return false;
-		return loc.getPiece().getColor().equals(this.color);
 	}
 	
 	/**
