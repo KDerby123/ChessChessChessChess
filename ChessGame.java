@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class ChessGame {
 
 	private Board board;
-        private String result;
+    private String result;
 	private int movesWithoutAgress;
 	private int moves;
 	private boolean whiteTurn;
@@ -28,6 +28,7 @@ public class ChessGame {
 	public boolean process(Coordinate selectedCoord, Coordinate destinationCoord) {
 		String displayResult = "";
 		Player currentPlayer;
+		System.out.println(result);
                 if (result.equals("Continue")) {
                     if (whiteTurn)
                             currentPlayer = board.getWhitePlayer();
@@ -67,8 +68,6 @@ public class ChessGame {
 		if (selectedCoord.equals(destinationCoord))
 			return false;
 		boolean capture = false;
-
-		//capture = (board.getLocAt(destinationCoord).getPiece() != null);
 		if (!(selectedPiece.testMove(board, destinationCoord))) {
                         gameInterface.displayResult1("Not Valid" );
 			return false;
@@ -78,10 +77,10 @@ public class ChessGame {
                 if (ChessGame.testCheck(board, destinationCoord, selectedCoord, whiteTurn))
                         return false;
 
-		//if (selectedPiece instanceof King) {
-		//	kingTest(selectedPiece, destinationCoord);
-		//}
-		if ((selectedPiece instanceof Rook) && (((Rook) selectedPiece).hasMoved())) {
+		/*if (selectedPiece instanceof King) {
+			kingTest((King) selectedPiece, destinationCoord);
+		} */
+		if ((selectedPiece instanceof Rook) && (!((Rook) selectedPiece).hasMoved())) {
 			((Rook) selectedPiece).setHasMoved(true);
 		}
 		cappedPiece = board.replace(destinationCoord, selectedPiece.getCoord());
@@ -118,21 +117,21 @@ public class ChessGame {
 		return true;
 	}
 
-	private void kingTest(Piece selectedPiece, Coordinate destinationCoord) {
-		Rook rook;
+	private void kingTest(King selectedPiece, Coordinate destinationCoord) {
+		Piece rook;
 		Coordinate nextDest;
 		int num;
 		if (selectedPiece.getColor() == Color.WHITE)
 			num = 7;
 		else
 			num = 0;
-		if (!((King) selectedPiece).hasMoved()) {
+		if (!selectedPiece.hasMoved()) {
 			if (destinationCoord.equals(new Coordinate(num, 6))) {
-				rook = (Rook) board.getPieceAtCoord(new Coordinate(num, 7));
+				rook = board.getPieceAtCoord(new Coordinate(num, 7));
 				nextDest = new Coordinate(num, 5);
 				castleHelper(rook, nextDest);
 			} else if (destinationCoord.equals(new Coordinate(num, 2))) {
-				rook = (Rook) board.getPieceAtCoord(new Coordinate(num, 0));
+				rook = board.getPieceAtCoord(new Coordinate(num, 0));
 				nextDest = new Coordinate(num, 3);
 				castleHelper(rook, nextDest);
 			}
@@ -167,9 +166,11 @@ public class ChessGame {
 		return false;
 	}
 
-	private void castleHelper(Rook rook, Coordinate nextDest) {
-		board.replace(rook.getCoord(), nextDest);
-		rook.setHasMoved(true);
+	private void castleHelper(Piece rook, Coordinate nextDest) {
+		board.getLocAt(rook.getCoord()).setPiece(null);
+		board.getLocAt(nextDest).setPiece(rook);
+		rook.setCoord(nextDest);
+		((Rook) rook).setHasMoved(true);
 	}
 
 	private String checkGameOver() {
