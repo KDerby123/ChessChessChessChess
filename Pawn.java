@@ -67,15 +67,25 @@ public class Pawn extends Piece {
 	@Override
 	public ArrayList<Coordinate> getMoveSpan() {
 		ArrayList<Coordinate> coords = new ArrayList<Coordinate>();
-		coords.add(new Coordinate(super.getNum() + 1, super.getLetter() + 1));
-		coords.add(new Coordinate(super.getNum() + 1, super.getLetter() - 1));
-		coords.add(new Coordinate(super.getNum() + 1, super.getLetter()));
-		coords.add(new Coordinate(super.getNum() + 2, super.getLetter()));
+                spanHelper(coords);
+		for (int i = 0;i<coords.size();i++) {
+                    if (Board.isValid(coords.get(i))) 
+                        coords.remove(i--);
+                }
 		return coords;
 	}
-
+        
+        private void spanHelper(ArrayList<Coordinate> coords) {
+            coords.add(new Coordinate(super.getNum() + forwardInc, super.getLetter() + forwardInc));
+            coords.add(new Coordinate(super.getNum() + forwardInc, super.getLetter() - forwardInc));
+            coords.add(new Coordinate(super.getNum() + forwardInc, super.getLetter()));
+            coords.add(new Coordinate(super.getNum() + 2*forwardInc, super.getLetter()));
+        }
+        
 	public boolean promoteCheck() {
-		return getCoord().getNum() == 7;
+                if (super.getColor() == Color.WHITE)
+                    return super.getNum() == 7;
+                return super.getNum() == 7;
 	}
 
 	public String toString() {
