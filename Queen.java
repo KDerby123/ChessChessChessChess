@@ -72,7 +72,7 @@ public class Queen extends Piece {
     		Coordinate coord = new Coordinate(super.getNum()+numInc,super.getLetter()+letterInc);
     		while (Board.isValid(coord)) {
     			coords.add(coord);
-    			coord = new Coordinate(super.getNum()+numInc,super.getLetter()+letterInc);
+    			coord = new Coordinate(coord.getNum()+numInc,coord.getLetter()+letterInc);
     		}
     	}
 	

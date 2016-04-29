@@ -32,7 +32,10 @@ public class Player {
 	}
 	
 	public void removePiece(Piece p) {
-		pieces.remove(p);
+            for (int i = 0;i<pieces.size();i++) {
+                if (pieces.get(i) == p)
+                    pieces.remove(i);
+            }
 	}
 	
 	public void setColor(Color color) {

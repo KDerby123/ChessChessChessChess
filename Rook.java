@@ -14,11 +14,17 @@ public class Rook extends Piece {
 		int selLetter = super.getLetter();
 		int num = coord.getNum();
 		int letter = coord.getLetter();
-		int numInc = Piece.genInc(selNum,num);
+		int numInc;
+                numInc = Piece.genInc(selNum,num);
 		int letterInc = Piece.genInc(selLetter,letter);
+                selNum += numInc;
+                selLetter += letterInc;
+                Coordinate coord1;
 		while ((selNum != num) || (selLetter != letter)) {
-			if (!board.isEmpty(new Coordinate(selNum,selLetter)))
+                        coord1 = new Coordinate(selNum,selLetter);
+			if (!board.isEmpty(coord1)) {
 				return true;
+                        }
 			selNum += numInc;
 			selLetter += letterInc;
 		}
@@ -65,7 +71,7 @@ public class Rook extends Piece {
 		return hasMoved;
 	}
 	
-	public void setHasMoved() {
-		hasMoved = false;
+	public void setHasMoved(boolean bool) {
+		hasMoved = bool;
 	}
 }

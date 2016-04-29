@@ -14,9 +14,13 @@ public class Bishop extends Piece {
      		int letter = coord.getLetter();
      		int numInc = Piece.genInc(selNum,num);
      		int letterInc = Piece.genInc(selLetter,letter);
+                selNum += numInc;
+                selLetter += letterInc;
      		while ((selNum != num) && (selLetter != letter)) {
      			if (!board.isEmpty(new Coordinate(selNum,selLetter)))
      				return true;
+                        selNum += numInc;
+                        selLetter += letterInc;
      		}
      		return false;
      	}	
@@ -31,7 +35,7 @@ public class Bishop extends Piece {
         		return false;
        		double slope = (1.0 * Math.abs(super.getNum()-num))/Math.abs(super.getLetter()-letter);
        		if (slope == 1.0)
-       			return isImpeded(board,coord);
+       			return !isImpeded(board,coord);
        		return false;
     	}
     	
@@ -51,6 +55,7 @@ public class Bishop extends Piece {
     			coords.add(coord);
     			coord = (new Coordinate(coord.getNum()+numInc,coord.getLetter()+letterInc));
     		}
+                return;
     	}
     	
     	public String toString() {

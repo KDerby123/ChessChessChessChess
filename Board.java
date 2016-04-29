@@ -53,32 +53,32 @@ public class Board {
 		// Add white pieces to the board
 		int letter;
 		for (letter = 0; letter <= 7; letter += 7)
-			addPiece(new Rook(Color.WHITE, new Coordinate(0, letter)));
+			addPiece(new Rook(Color.WHITE, new Coordinate(7, letter)));
 		for (letter = 1; letter <= 6; letter += 5)
-			addPiece(new Knight(Color.WHITE, new Coordinate(0, letter)));
+			addPiece(new Knight(Color.WHITE, new Coordinate(7, letter)));
 		for (letter = 2; letter <= 5; letter += 3)
-			addPiece(new Bishop(Color.WHITE, new Coordinate(0, letter)));
+			addPiece(new Bishop(Color.WHITE, new Coordinate(7, letter)));
 		for (letter = 0; letter <= 7; ++letter)
-			addPiece(new Pawn(Color.WHITE, new Coordinate(1, letter)));
-		addPiece(new Queen(Color.WHITE, new Coordinate(0, 4)));
+			addPiece(new Pawn(Color.WHITE, new Coordinate(6, letter)));
+		addPiece(new Queen(Color.WHITE, new Coordinate(7, 3)));
 
-		King whiteKing = new King(Color.WHITE, new Coordinate(0, 3));
+		King whiteKing = new King(Color.WHITE, new Coordinate(7, 4));
 		addPiece(whiteKing);
 		WHITE_PLAYER.setKing(whiteKing);
 
 		// Black pieces to the board
 		for (letter = 0; letter <= 7; letter += 7)
-			addPiece(new Rook(Color.BLACK, new Coordinate(7, letter)));
+			addPiece(new Rook(Color.BLACK, new Coordinate(0, letter)));
 		for (letter = 1; letter <= 6; letter += 5)
-			addPiece(new Knight(Color.BLACK, new Coordinate(7, letter)));
+			addPiece(new Knight(Color.BLACK, new Coordinate(0, letter)));
 		for (letter = 2; letter <= 5; letter += 3)
-			addPiece(new Bishop(Color.BLACK, new Coordinate(7, letter)));
+			addPiece(new Bishop(Color.BLACK, new Coordinate(0, letter)));
 		for (letter = 0; letter <= 7; ++letter)
-			addPiece(new Pawn(Color.BLACK, new Coordinate(6, letter)));
+			addPiece(new Pawn(Color.BLACK, new Coordinate(1, letter)));
 		
-		addPiece(new Queen(Color.BLACK, new Coordinate(7, 4)));
+		addPiece(new Queen(Color.BLACK, new Coordinate(0, 3)));
 		
-		King blackKing = new King(Color.BLACK, new Coordinate(7, 3));
+		King blackKing = new King(Color.BLACK, new Coordinate(0, 4));
 		addPiece(blackKing);
 		BLACK_PLAYER.setKing(blackKing);
 	}
@@ -100,11 +100,11 @@ public class Board {
 	}
 
 	public Piece replace(Coordinate to, Coordinate from) {
-		Location toLoc = getLocAt(to);
-		Location fromLoc = getLocAt(from);
-		Piece piece = toLoc.getPiece();
-		toLoc.setPiece(fromLoc.getPiece());
-		fromLoc.setPiece(null);
+		Piece piece = getPieceAtCoord(to);
+                Piece movedPiece = getPieceAtCoord(from);
+		this.getLocAt(to).setPiece(movedPiece);
+                this.getLocAt(from).setPiece(null);
+                movedPiece.setCoord(to);
 		return piece;
 	}
 
