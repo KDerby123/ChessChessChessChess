@@ -22,13 +22,14 @@ public class King extends Piece {
 	}
 	public boolean isImpeded(Board board, Coordinate coord) { // skeleton
                 Coordinate selCoord;
-		int letterInc = Piece.genInc(super.getLetter(),coord.getLetter());
+                int letterInc = Piece.genInc(super.getLetter(),coord.getLetter());
                 int selNum = super.getNum();
                 int selLetter = super.getLetter() + letterInc;
                 while (selLetter < coord.getLetter()) {
                     selCoord = new Coordinate(selNum,selLetter);
                     if (board.getPieceAtCoord(selCoord) != null)
                             return true;
+                    selLetter += letterInc;
                 }
                 return false;
 	}
@@ -41,17 +42,18 @@ public class King extends Piece {
 	        int i;
         	if (super.isSameColor(p))
         		return false;
-        	/*if (!this.hasMoved()) {
+        	/* if (!hasMoved) {
         		if (super.getColor() == Color.WHITE) 
         			i = 7;
         		else
         			i = 0;
         		if (coord.equals(new Coordinate(i,6))) {
-        			p = board.getLocAt(new Coordinate(i,7)).getPiece();
+        			p = board.getPieceAtCoord(new Coordinate(i,7));
+        			System.out.println(p);
         			return ((p != null) && (p instanceof Rook) && (!((Rook) p).hasMoved()) && !isImpeded(board,new Coordinate(i,7)));
         		} else if (coord.equals(new Coordinate(i,2))) {
-        			p = board.getLocAt(new Coordinate(i,0)).getPiece();
-        			return ((p != null) && (p instanceof Rook) && (!((Rook) p).hasMoved()) && isImpeded(board, new Coordinate(i,0)));
+        			p = board.getPieceAtCoord(new Coordinate(i,0));
+        			return ((p != null) && (p instanceof Rook) && (!((Rook) p).hasMoved()) && !isImpeded(board, new Coordinate(i,0)));
         		}
         	} */
         	return ((Math.abs(super.getNum()-num) <= 1) && (Math.abs(super.getLetter()-letter) <= 1));
