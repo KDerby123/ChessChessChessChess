@@ -3,7 +3,9 @@
 import java.util.ArrayList;
 
 public class ChessGame {
+
 	private Board board;
+        private String result;
 	private int movesWithoutAgress;
 	private int moves;
 	private boolean whiteTurn;
@@ -14,6 +16,7 @@ public class ChessGame {
 	public ChessGame(Player playerOne, Player playerTwo, ChessGameInterface gameInterface) {
 		gameSetup(playerOne, playerTwo);
 		this.gameInterface = gameInterface;
+                result = "Continue";
 	}
 
 	/*
@@ -23,55 +26,65 @@ public class ChessGame {
 	 */
 
 	public boolean process(Coordinate selectedCoord, Coordinate destinationCoord) {
-		String result = "";
+		String displayResult = "";
 		Player currentPlayer;
-		if (whiteTurn)
-			currentPlayer = board.getWhitePlayer();
-		else
-			currentPlayer = board.getBlackPlayer();
+                if (result.equals("Continue")) {
+                    if (whiteTurn)
+                            currentPlayer = board.getWhitePlayer();
+                    else
+                            currentPlayer = board.getBlackPlayer();
 
-		if (!makeMove(currentPlayer, selectedCoord, destinationCoord))
-			return false;
-
-		result = checkGameOver();
-		whiteTurn = !whiteTurn;
-		if (whiteTurn)
-			result = "White Turn";
-		else
-			result = "Black Turn";
-		gameInterface.displayResult0(result);
-		return true;
+                    if (!makeMove(currentPlayer, selectedCoord, destinationCoord)) {
+                            gameInterface.displayResult1("Not Valid" );
+                            return false;
+                    } else {
+                            gameInterface.displayResult1("");
+                    }
+                    whiteTurn = !whiteTurn;
+                    result = checkGameOver();
+                    if (result.equals("Continue")) {
+                        if (whiteTurn)
+                        	displayResult = "White Turn";
+                        else
+                        	displayResult = "Black Turn";
+                    } else {
+                        displayResult = result;
+                    }
+                    gameInterface.displayResult0(displayResult);
+                    return true;
+                }
+                gameInterface.displayResult0(result);
+		return false;
 	}
 
 	public boolean makeMove(Player currentPlayer, Coordinate selectedCoord, Coordinate destinationCoord) {
 
 		Piece selectedPiece = board.getPieceAtCoord(selectedCoord);
 		System.out.println(selectedPiece);
-		if (selectedPiece == null || !currentPlayer.getColor().equals(selectedPiece.getColor())) {
-			gameInterface.displayResult1("Not Valid" );
+		if (selectedPiece == null || !currentPlayer.getColor().equals(selectedPiece.getColor())) 
 			return false;
-		} else
-			gameInterface.displayResult1("");
-		
-
 		Piece cappedPiece;
 		if (selectedCoord.equals(destinationCoord))
 			return false;
 		boolean capture = false;
 
-		// capture = (board.getLocAt(destinationCoord).getPiece() != null);
-		if (!(selectedPiece.testMove(board, destinationCoord)))
+		//capture = (board.getLocAt(destinationCoord).getPiece() != null);
+		if (!(selectedPiece.testMove(board, destinationCoord))) {
+                        gameInterface.displayResult1("Not Valid" );
 			return false;
-		if (testCheck(board, destinationCoord, selectedCoord, currentPlayer))
-			return false;
+                } else {
+                        gameInterface.displayResult1("");  
+                }
+                if (ChessGame.testCheck(board, destinationCoord, selectedCoord, whiteTurn))
+                        return false;
 
-		if (selectedPiece instanceof King) {
-			kingTest(selectedPiece, destinationCoord);
-		}
+		//if (selectedPiece instanceof King) {
+		//	kingTest(selectedPiece, destinationCoord);
+		//}
 		if ((selectedPiece instanceof Rook) && (((Rook) selectedPiece).hasMoved())) {
 			((Rook) selectedPiece).setHasMoved(true);
 		}
-		cappedPiece = board.replace(selectedPiece.getCoord(), destinationCoord);
+		cappedPiece = board.replace(destinationCoord, selectedPiece.getCoord());
 		if (cappedPiece != null) {
 			if (currentPlayer.getColor() == Color.WHITE) {
 				getBlackPlayer().removePiece(cappedPiece);
@@ -110,17 +123,17 @@ public class ChessGame {
 		Coordinate nextDest;
 		int num;
 		if (selectedPiece.getColor() == Color.WHITE)
-			num = 0;
-		else
 			num = 7;
+		else
+			num = 0;
 		if (!((King) selectedPiece).hasMoved()) {
 			if (destinationCoord.equals(new Coordinate(num, 6))) {
 				rook = (Rook) board.getPieceAtCoord(new Coordinate(num, 7));
 				nextDest = new Coordinate(num, 5);
 				castleHelper(rook, nextDest);
-			} else if (destinationCoord.equals(new Coordinate(num, 3))) {
-				rook = (Rook) board.getPieceAtCoord(new Coordinate(num, 1));
-				nextDest = new Coordinate(num, 4);
+			} else if (destinationCoord.equals(new Coordinate(num, 2))) {
+				rook = (Rook) board.getPieceAtCoord(new Coordinate(num, 0));
+				nextDest = new Coordinate(num, 3);
 				castleHelper(rook, nextDest);
 			}
 		}
@@ -171,17 +184,16 @@ public class ChessGame {
 		Player white = getWhitePlayer();
 		Player black = getBlackPlayer();
 		if (whiteTurn && white.getKing().isInCheck(board, getBlackPlayer()))
-			return checkMate(white, black);
+			return checkMate(white);
 		else if (!whiteTurn && black.getKing().isInCheck(board, getWhitePlayer()))
-			return checkMate(black, white);
-		// what the hell do we return by defualt
-		return false; // i put this here so it would compile
+			return checkMate(black);
+		return false; 
 	}
 
-	private boolean checkMate(Player currentPlayer, Player oppPlayer) {
+	private boolean checkMate(Player currentPlayer) {
 		ArrayList<Piece> pieces = currentPlayer.getPieces();
 		for (Piece piece : pieces) {
-			if (piece.hasMove(board, currentPlayer.getKing(), oppPlayer))
+			if (piece.hasMove(board,(King) currentPlayer.getKing(), whiteTurn))
 				return false;
 		}
 		return true;
@@ -205,7 +217,6 @@ public class ChessGame {
 	}
 
 	private boolean fiftyMoveRule() {
-		// YOU CANT START A METHOD NAME WITH A NUMBER
 		return movesWithoutAgress == 50;
 	}
 
@@ -252,7 +263,7 @@ public class ChessGame {
 		else
 			pieces = board.getBlackPlayer().getPieces();
 		for (Piece piece : pieces) {
-			if (piece.hasMove(board, getWhitePlayer().getKing(), getBlackPlayer()))
+			if (piece.hasMove(board, getWhitePlayer().getKing(), whiteTurn))
 				return false;
 		}
 		return true;
@@ -274,26 +285,32 @@ public class ChessGame {
 		return true;
 	}
 
-	// Still needs to remove piece, and ignore the piece taken
-	public static boolean testCheck(Board board, Coordinate to, Coordinate from, Player oppPlayer) {
-		Piece tempPiece = board.replace(from, to);
+	public static boolean testCheck(Board otherBoard, Coordinate to, Coordinate from, boolean turn) {
+		Piece tempPiece = otherBoard.replace(to, from);
 		Player player;
+                Player oppPlayer;
 		King king;
 		boolean inCheck = false;
-		if (oppPlayer.getColor() == Color.WHITE)
-			player = board.getBlackPlayer();
-		else
-			player = board.getWhitePlayer();
-
+		if (turn) {
+			player = otherBoard.getWhitePlayer();
+                        oppPlayer = otherBoard.getBlackPlayer();
+                } else {
+			player = otherBoard.getBlackPlayer();
+                        oppPlayer = otherBoard.getWhitePlayer();
+                }
 		king = player.getKing();
-		if (tempPiece != null)
-			player.removePiece(tempPiece);
-		if (king.isInCheck(board, oppPlayer)) {
+		if (tempPiece != null) {
+                    oppPlayer.removePiece(tempPiece);
+                }
+		if (king.isInCheck(otherBoard, oppPlayer)) {
 			inCheck = true;
 		}
-		board.getLocAt(from).setPiece(board.getLocAt(to).getPiece());
-		board.getLocAt(to).setPiece(tempPiece);
-		player.addPiece(tempPiece);
+                otherBoard.getLocAt(to).getPiece().setCoord(from);
+		otherBoard.getLocAt(from).setPiece(otherBoard.getLocAt(to).getPiece());
+		otherBoard.getLocAt(to).setPiece(tempPiece);
+                
+                if (tempPiece != null)
+                    oppPlayer.addPiece(tempPiece);
 		return inCheck;
 	}
 
